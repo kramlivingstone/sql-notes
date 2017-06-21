@@ -1,0 +1,30 @@
+1.) SELECT * FROM `customers` WHERE country = 'Philippines';
+2.) SELECT productName,SUM(quantityOrdered * priceEach) AS subtotal FROM `orderdetails`, `products` 
+    WHERE orderdetails.productCode = products.productCode GROUP BY productName;
+3.) SELECT firstName,lastName, city FROM `employees` JOIN `offices` ON (employees.officeCode = offices.officeCode) WHERE offices.city = 'Tokyo';
+4.) SELECT productName, customerName FROM `customers` JOIN `orders` JOIN `orderdetails` JOIN `products` 
+    ON (customers.customerNumber = orders.customerNumber AND orders.orderNumber = orderdetails.orderNumber 
+    AND orderdetails.productCode = products.productCode) 
+    WHERE customers.customerName = 'Baane Mini Imports';
+5.) SELECT firstName, lastName, offices.country, customers.country FROM employees JOIN offices ON offices.officeCode = employees.officeCode 
+    JOIN customers ON offices.country = customers.country WHERE customers.salesRepEmployeeNumber = employees.employeeNumber GROUP BY lastName, firstName;
+6.) SELECT e.firstName, e.lastName FROM employees e JOIN employees m ON (e.reportsTo = m.employeeNumber) WHERE m.firstName = 'Anthony' AND m.lastName = 'Bow'
+
+
+
+*Customers who ordered the most items
+SELECT c.customerName, SUM(od.quantityOrdered) total FROM customers c, orders o, orderdetails od 
+WHERE c.customerNumber = o.customerNumber AND o.orderNumber = od.orderNumber GROUP BY c.customerName 
+HAVING total = (SELECT MAX(cnt) FROM (SELECT SUM(od.quantityOrdered)cnt FROM orderdetails od, orders o,customers c 
+WHERE c.customerNumber = o.customerNumber AND o.orderNumber = od.orderNumber GROUP BY customerName)x);
+
+
+*Customer who paid the most payments
+SELECT c.customerName, COUNT(p.customerNumber) payments, sum(p.amount) subtotal FROM customers c,payments p 
+WHERE c.customerNumber = p.customerNumber GROUP BY p.customerNumber 
+HAVING payments = (SELECT MAX(cnt) FROM (SELECT COUNT(*) cnt FROM payments GROUP BY customerNumber)x);
+
+
+*Employees who do not serve any customers
+SELECT e.firstName, e.lastName, c.customerName FROM employees e LEFT JOIN customers c 
+ON(c.salesRepEmployeeNumber = e.employeeNumber) HAVING c.customerName IS NULL ;

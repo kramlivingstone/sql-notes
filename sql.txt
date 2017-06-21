@@ -1,0 +1,44 @@
+Movies
+title
+year
+length
+genre
+studioName
+producerCertificateNUmber
+
+
+StarIn
+movieTitle
+movieYear
+starName
+
+MovieStar
+name
+address
+gender
+
+MovieExec
+name
+address
+certificateNumber
+netWorth
+
+Studio
+name
+address
+presidentName
+
+
+1.) SELECT address FROM Studio WHERE name = 'MGM studios';
+2.) SELECT starName FROM StarsIn where movieTitle LIKE '%Love%' OR movieYear = '1980';
+3.) SELECT name FROM MovieExec WHERE netWorth >= 10000000;
+4.) SELECT name FROM MovieStar WHERE gender = 'male' OR address LIKE '%Malibu%';
+5.) SELECT name FROM MovieStar JOIN StarsIn ON (MovieStar.name = StarsIn.starName) WHERE StarsIn.movieTitle = 'Titanic' AND MovieStar.gender = 'male';
+6.) SELECT starName FROM StarsIn JOIN Movies ON (StarsIn.movieYear = Movies.year) WHERE Movies.studioName LIKE '%MGM%' AND Movies.year = 1995;
+7.) SELECT name FROM MovieExec JOIN Movies ON (Movies.producerCertificateNumber = MovieExec.certificateNumber) WHERE Movies.title = 'Starwars';
+8.) SELECT name FROM MovieExec JOIN Movies ON (MovieExec.certificateNumber = Movies.producerCertificateNUmber) 
+     WHERE Movies.title = (SELECT movieTitle FROM StarsIn WHERE starName = 'Harrison Ford');
+//
+
+SELECT name FROM MovieExec JOIN Movies ON (MovieExec.certificateNumber = Movies.producerCertificateNUmber) 
+   WHERE Movies.title IN (SELECT movieTitle FROM StarsIn WHERE starName = 'Harrison Ford');
